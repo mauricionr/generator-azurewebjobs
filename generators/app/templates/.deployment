@@ -1,0 +1,2 @@
+[config]
+command = bash App_Data/jobs/triggered/interest/deploy.sh
