@@ -38,10 +38,15 @@ module.exports = yeoman.Base.extend({
       console.log(items);
       items.forEach(file => {
         if (file === '.deployment') {
-          this.fs.copy(
-            this.templatePath(file),
-            this.destinationPath(file)
-          );
+          fs.appendFile(this.destinationPath(file),`command = App_Data/jobs/triggered/${jobname}/deploy.sh`,err => {
+            if (err) {
+              this.fs.copy(
+                this.templatePath(file),
+                this.destinationPath(file)
+              );
+            }
+          });
+
         } else {
           this.fs.copyTpl(
             this.templatePath(file),
