@@ -6,7 +6,7 @@ var fs = require('fs');
 
 module.exports = yeoman.Base.extend({
 
-  prompting: function () {
+  prompting: function() {
     var done = this.async();
 
     // Have Yeoman greet the user.
@@ -21,7 +21,7 @@ module.exports = yeoman.Base.extend({
       default: 'defaultname'
     }];
 
-    this.prompt(prompts, function (props) {
+    this.prompt(prompts, function(props) {
       this.props = props;
       // To access props later use this.props.someAnswer;
 
@@ -29,7 +29,7 @@ module.exports = yeoman.Base.extend({
     }.bind(this));
   },
 
-  writing: function () {
+  writing: function() {
     fs.readdir(this.templatePath(), (err, items) => {
       if (err) {
         throw err;
@@ -38,27 +38,40 @@ module.exports = yeoman.Base.extend({
       console.log(items);
       items.forEach(file => {
         if (file === '.deployment') {
-          fs.appendFile(this.destinationPath(file),`command = App_Data/jobs/triggered/${jobname}/deploy.sh`,err => {
-            if (err) {
-              this.fs.copy(
-                this.templatePath(file),
-                this.destinationPath(file)
-              );
-            }
+
+          fs.exists(this.destinationPath(file), exists => {
+            // handle result
+            console.log(exists);
+            if (exists) {
+              fs.appendFile(this.destinationPath(file), `command = App_Data/jobs/triggered/${jobname}/deploy.sh`, err => {
+                if (err) {
+                  throw new err;
+                }
+
+              });
+
+          } else {
+            this.fs.copy(
+              this.templatePath(file),
+              this.destinationPath(file)
+            );
+          }
           });
+
 
         } else {
           this.fs.copyTpl(
             this.templatePath(file),
-            this.destinationPath(`App_Data/jobs/triggered/${jobname}/${file}`),
-            {name: jobname}
+            this.destinationPath(`App_Data/jobs/triggered/${jobname}/${file}`), {
+              name: jobname
+            }
           );
         }
       });
     });
   },
 
-  install: function () {
+  install: function() {
     this.installDependencies();
   }
 });

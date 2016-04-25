@@ -1,6 +1,6 @@
 {
   "name": "generator-azurewebjobs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Generates node webjobs and deployscripts",
   "homepage": "",
   "author": {
